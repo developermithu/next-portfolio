@@ -1,15 +1,24 @@
-import { Nunito } from 'next/font/google'
+import localFont from 'next/font/local'
 import '@/app/global.css'
+import Header from '@/components/Header'
 
-const nunitoFont = Nunito({
-    subsets: ['latin'],
-    display: 'swap',
+const geistSans = localFont({
+    src: './fonts/GeistVF.woff',
+    variable: '--font-geist-sans',
+    weight: '100 900',
+})
+const geistMono = localFont({
+    src: './fonts/GeistMonoVF.woff',
+    variable: '--font-geist-mono',
+    weight: '100 900',
 })
 
 const RootLayout = ({ children }) => {
     return (
-        <html lang="en" className={nunitoFont.className}>
-            <body className="antialiased bg-[#1a1f2e] text-white min-h-screen font-sans">
+        <html lang="en">
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#1a1f2e] text-white min-h-screen font-sans`}>
+                <Header />
                 {children}
             </body>
         </html>
@@ -17,7 +26,7 @@ const RootLayout = ({ children }) => {
 }
 
 export const metadata = {
-    title: 'Laravel',
+    title: 'Mithu Das - Full Stack Laravel Developer',
 }
 
 export default RootLayout
