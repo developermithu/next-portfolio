@@ -13,6 +13,7 @@ import {
     Menu,
     Eye,
     Send,
+    LoaderCircle,
 } from 'lucide-react'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
@@ -28,13 +29,12 @@ export default function PostPage({ params }) {
 
     const [activeSection, setActiveSection] = useState('introduction')
     const [searchQuery, setSearchQuery] = useState('')
-    const [selectedTag, setSelectedTag] = useState('')
     const [showScrollTop, setShowScrollTop] = useState(false)
     const [showTableOfContents, setShowTableOfContents] = useState(false)
-    const [liked, setLiked] = useState(false)
     const [commentContent, setCommentContent] = useState('')
+    const [isLiking, setIsLiking] = useState(false)
 
-    const { data, error } = useSWR(`/api/posts/${id}`, fetcher)
+    const { data, error, mutate } = useSWR(`/api/posts/${id}`, fetcher)
 
     const tableOfContents = [
         { id: 'introduction', title: 'Introduction' },
@@ -66,6 +66,18 @@ export default function PostPage({ params }) {
         setCommentContent('')
     }
 
+    const handleToggleLike = async () => {
+        try {
+            setIsLiking(true)
+            await axios.post(`/api/posts/${id}/toggle-like`)
+            mutate() // re-fetch post data to update like status
+        } catch (err) {
+            console.error('Error toggling like:', err)
+        } finally {
+            setIsLiking(false)
+        }
+    }
+
     if (error) return <div>Failed to load post</div>
 
     // Loading
@@ -76,7 +88,7 @@ export default function PostPage({ params }) {
             </div>
         )
 
-    const { post, relatedPosts, previous_post, next_post } = data
+    const { post, is_liked, relatedPosts, previous_post, next_post } = data
 
     return (
         <div className="min-h-screen bg-[#1a1f2e] text-white pt-20">
@@ -96,14 +108,20 @@ export default function PostPage({ params }) {
                     <h1 className="text-2xl font-bold">Tech Blog</h1>
                     <div className="flex items-center space-x-4">
                         <motion.button
-                            className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-full flex items-center"
+                            className="bg-[#4fd1c5] disabled:opacity-50 disabled:pointer-events-none text-[#1a1f2e] px-4 py-2 rounded-full flex items-center"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => setLiked(!liked)}>
-                            <ThumbsUp
-                                className={`mr-2 ${liked ? 'fill-current' : ''}`}
-                            />
-                            {/* {post.likes + (liked ? 1 : 0)} */} 10
+                            onClick={handleToggleLike}
+                            disabled={isLiking}>
+                            {isLiking ? (
+                                <LoaderCircle className="mr-2 animate-spin" />
+                            ) : (
+                                <ThumbsUp
+                                    className={`mr-2 ${is_liked ? 'fill-current' : ''}`}
+                                />
+                            )}
+
+                            {post.likes}
                         </motion.button>
                         <motion.button
                             className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-full flex items-center"

@@ -236,7 +236,7 @@ export default function BlogPage() {
                                         {post.title}
                                     </h2>
                                     <p className="mb-4 text-gray-400">
-                                        {post.content}
+                                        {post.content?.slice(0, 180) + ' ...'}
                                     </p>
 
                                     {post.tags?.length > 0 && (
@@ -261,7 +261,9 @@ export default function BlogPage() {
                                             {post.published_at}
                                         </span>
                                         <Clock className="mr-2" />
-                                        <span>{post.reading_time} min read</span>
+                                        <span>
+                                            {post.reading_time} min read
+                                        </span>
                                     </div>
                                     <motion.a
                                         href={`/blog/posts/${post.id}`}
