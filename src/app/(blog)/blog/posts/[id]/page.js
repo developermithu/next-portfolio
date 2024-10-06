@@ -10,21 +10,21 @@ import {
     Share2,
     ThumbsUp,
     Search,
-    Tag,
-    ChevronRight,
     ChevronUp,
     Menu,
     Eye,
-    Edit,
-    Trash2,
     Send,
 } from 'lucide-react'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
+import Tags from '@/app/(blog)/(components)/Tags'
+import RelatedPosts from '@/app/(blog)/(components)/RelatedPosts'
 
-const fetcher = url => axios.get(url).then(res => res.data.data)
+const fetcher = url => axios.get(url).then(res => res.data)
 
-export default function PostPage({ params: { id } }) {
+export default function PostPage({ params }) {
+    const { id } = params
+
     const [activeSection, setActiveSection] = useState('introduction')
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedTag, setSelectedTag] = useState('')
@@ -33,7 +33,7 @@ export default function PostPage({ params: { id } }) {
     const [liked, setLiked] = useState(false)
     const [commentContent, setCommentContent] = useState('')
 
-    const { data: post, error } = useSWR(`/api/posts/${id}`, fetcher)
+    const { data, error } = useSWR(`/api/posts/${id}`, fetcher)
 
     const tableOfContents = [
         { id: 'introduction', title: 'Introduction' },
@@ -66,9 +66,16 @@ export default function PostPage({ params: { id } }) {
     }
 
     if (error) return <div>Failed to load post</div>
-    if (!post) return <div>Loading...</div>
 
-    {console.log(post)}
+    // Loading
+    if (!data)
+        return (
+            <div className="min-h-screen bg-[#1a1f2e] text-white pt-20">
+                <div className="container px-6 py-12 mx-auto">Loading...</div>
+            </div>
+        )
+
+    const { post, relatedPosts } = data
 
     return (
         <div className="min-h-screen bg-[#1a1f2e] text-white pt-20">
@@ -95,7 +102,7 @@ export default function PostPage({ params: { id } }) {
                             <ThumbsUp
                                 className={`mr-2 ${liked ? 'fill-current' : ''}`}
                             />
-                            {post.likes + (liked ? 1 : 0)}
+                            {/* {post.likes + (liked ? 1 : 0)} */} 10
                         </motion.button>
                         <motion.button
                             className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-full flex items-center"
@@ -122,7 +129,7 @@ export default function PostPage({ params: { id } }) {
                             <Calendar className="mr-2" />
                             <span className="mr-4">{post.published_at}</span>
                             <Clock className="mr-2" />
-                            <span className="mr-4">10 min read</span>
+                            <span className="mr-4">{post.reading_time} min read</span>
                             <Eye className="mr-2" />
                             <span>100 views</span>
                         </div>
@@ -141,7 +148,11 @@ export default function PostPage({ params: { id } }) {
                             transition={{ duration: 0.5, delay: 0.4 }}>
                             <div className="flex items-center mb-4">
                                 <img
-                                    src={post.author?.avatar ? post.author.avatar : 'https://via.placeholder.com/150'}
+                                    src={
+                                        post.author?.avatar
+                                            ? post.author.avatar
+                                            : 'https://via.placeholder.com/150'
+                                    }
                                     alt={post.author?.name}
                                     className="w-16 h-16 mr-4 rounded-full"
                                 />
@@ -150,7 +161,8 @@ export default function PostPage({ params: { id } }) {
                                         {post.author?.name}
                                     </h3>
                                     <p className="text-gray-400">
-                                        Full-stack developer passionate about creating innovative web solutions.
+                                        Full-stack developer passionate about
+                                        creating innovative web solutions.
                                     </p>
                                 </div>
                             </div>
@@ -261,7 +273,7 @@ export default function PostPage({ params: { id } }) {
                         </motion.div>
                         {/* Comments */}
 
-{/* Pagination */}
+                        {/* Pagination */}
                         <motion.div
                             className="flex justify-between"
                             initial={{ opacity: 0, y: 20 }}
@@ -292,6 +304,7 @@ export default function PostPage({ params: { id } }) {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5, delay: 0.4 }}>
                         <div className="sticky top-20">
+                            {/* Search */}
                             <div className="mb-8">
                                 <h3 className="mb-4 text-xl font-semibold">
                                     Search
@@ -310,63 +323,17 @@ export default function PostPage({ params: { id } }) {
                                 </div>
                             </div>
 
-                            <div className="mb-8">
-                                <h3 className="mb-4 text-xl font-semibold">
-                                    Tags
-                                </h3>
-                                {/* <div className="flex flex-wrap gap-2">
-                                    {post.tags.map((tag, index) => (
-                                        <motion.span
-                                            key={index}
-                                            className={`px-3 py-1 rounded-full text-sm cursor-pointer ${
-                                                selectedTag === tag
-                                                    ? 'bg-[#4fd1c5] text-[#1a1f2e]'
-                                                    : 'bg-[#2a2f3e] text-[#4fd1c5]'
-                                            }`}
-                                            onClick={() =>
-                                                setSelectedTag(
-                                                    tag === selectedTag
-                                                        ? ''
-                                                        : tag,
-                                                )
-                                            }
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}>
-                                            <Tag className="inline-block w-4 h-4 mr-1" />
-                                            {tag}
-                                        </motion.span>
-                                    ))}
-                                </div> */}
-                            </div>
+                            {/* Tags */}
+                            <Tags post={post} />
 
-                            <div>
-                                <h3 className="mb-4 text-xl font-semibold">
-                                    Related Posts
-                                </h3>
-                                <ul className="space-y-4">
-                                    {[
-                                        'Mastering React Hooks',
-                                        'The Power of GraphQL',
-                                        'Building Scalable Node.js Apps',
-                                    ].map((post, index) => (
-                                        <motion.li
-                                            key={index}
-                                            className="bg-[#2a2f3e] p-3 rounded"
-                                            whileHover={{ scale: 1.03 }}>
-                                            <a
-                                                href="#"
-                                                className="text-[#4fd1c5] hover:underline flex items-center justify-between">
-                                                {post}
-                                                <ChevronRight className="w-4 h-4" />
-                                            </a>
-                                        </motion.li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {/* Related Posts */}
+                            <RelatedPosts relatedPosts={relatedPosts} />
                         </div>
                     </motion.div>
                 </div>
             </main>
+
+            {/* Scroll To Top */}
             <AnimatePresence>
                 {showScrollTop && (
                     <motion.button
@@ -383,6 +350,9 @@ export default function PostPage({ params: { id } }) {
                     </motion.button>
                 )}
             </AnimatePresence>
+            {/* Scroll To Top */}
+
+            {/* Table of Contents */}
             <motion.button
                 className="fixed top-1/2 right-8 bg-[#4fd1c5] text-[#1a1f2e] p-3 rounded-full shadow-lg"
                 onClick={() => setShowTableOfContents(!showTableOfContents)}
@@ -390,6 +360,7 @@ export default function PostPage({ params: { id } }) {
                 whileTap={{ scale: 0.9 }}>
                 <Menu />
             </motion.button>
+
             <AnimatePresence>
                 {showTableOfContents && (
                     <motion.div
@@ -421,6 +392,7 @@ export default function PostPage({ params: { id } }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {/* Table of Contents */}
         </div>
     )
 }

@@ -133,6 +133,7 @@ export default function BlogPage() {
                     />
                 </motion.button>
 
+                {/* Filters */}
                 <AnimatePresence>
                     {showFilters && (
                         <motion.div
@@ -168,6 +169,7 @@ export default function BlogPage() {
                                 <h3 className="mb-2 text-lg font-semibold">
                                     Tags
                                 </h3>
+
                                 <div className="flex flex-wrap gap-2">
                                     {Array.from(
                                         new Set(
@@ -236,15 +238,19 @@ export default function BlogPage() {
                                     <p className="mb-4 text-gray-400">
                                         {post.content}
                                     </p>
-                                    {/* <div className="flex flex-wrap gap-2 mb-4">
-                                        {post.tags.map(tag => (
-                                            <span
-                                                key={tag}
-                                                className="bg-[#1a1f2e] text-[#4fd1c5] px-2 py-1 rounded-full text-xs">
-                                                #{tag}
-                                            </span>
-                                        ))}
-                                    </div> */}
+
+                                    {post.tags?.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mb-4">
+                                            {post.tags.map(tag => (
+                                                <span
+                                                    key={tag.id}
+                                                    className="bg-[#1a1f2e] text-[#4fd1c5] px-2 py-1 rounded-full text-xs">
+                                                    #{tag.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+
                                     <div className="flex items-center mb-4 text-sm text-gray-400">
                                         <User className="mr-2" />
                                         <span className="mr-4">
@@ -255,7 +261,7 @@ export default function BlogPage() {
                                             {post.published_at}
                                         </span>
                                         <Clock className="mr-2" />
-                                        <span>10 min read</span>
+                                        <span>{post.reading_time} min read</span>
                                     </div>
                                     <motion.a
                                         href={`/blog/posts/${post.id}`}
