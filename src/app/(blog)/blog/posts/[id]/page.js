@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     ArrowLeft,
-    ArrowRight,
     Calendar,
     Clock,
     Share2,
@@ -19,6 +18,7 @@ import useSWR from 'swr'
 import axios from '@/lib/axios'
 import Tags from '@/app/(blog)/(components)/Tags'
 import RelatedPosts from '@/app/(blog)/(components)/RelatedPosts'
+import SimplePaginate from '@/components/SimplePaginate'
 
 const fetcher = url => axios.get(url).then(res => res.data)
 
@@ -75,7 +75,7 @@ export default function PostPage({ params }) {
             </div>
         )
 
-    const { post, relatedPosts } = data
+    const { post, relatedPosts, previous_post, next_post } = data
 
     return (
         <div className="min-h-screen bg-[#1a1f2e] text-white pt-20">
@@ -129,7 +129,9 @@ export default function PostPage({ params }) {
                             <Calendar className="mr-2" />
                             <span className="mr-4">{post.published_at}</span>
                             <Clock className="mr-2" />
-                            <span className="mr-4">{post.reading_time} min read</span>
+                            <span className="mr-4">
+                                {post.reading_time} min read
+                            </span>
                             <Eye className="mr-2" />
                             <span>100 views</span>
                         </div>
@@ -274,30 +276,14 @@ export default function PostPage({ params }) {
                         {/* Comments */}
 
                         {/* Pagination */}
-                        <motion.div
-                            className="flex justify-between"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.8 }}>
-                            <motion.a
-                                href="#"
-                                className="bg-[#2a2f3e] text-[#4fd1c5] px-6 py-3 rounded-full flex items-center"
-                                whileHover={{ scale: 1.05, x: -5 }}
-                                whileTap={{ scale: 0.95 }}>
-                                <ArrowLeft className="mr-2" />
-                                Previous Post
-                            </motion.a>
-                            <motion.a
-                                href="#"
-                                className="bg-[#2a2f3e] text-[#4fd1c5] px-6 py-3 rounded-full flex items-center"
-                                whileHover={{ scale: 1.05, x: 5 }}
-                                whileTap={{ scale: 0.95 }}>
-                                Next Post
-                                <ArrowRight className="ml-2" />
-                            </motion.a>
-                        </motion.div>
-                    </motion.div>
+                        <SimplePaginate
+                            previous_post={previous_post}
+                            next_post={next_post}
+                        />
+                        {/* Pagination */}
 
+                    </motion.div>
+                    {console.log(data)}
                     <motion.div
                         className="lg:w-1/3"
                         initial={{ opacity: 0, x: 50 }}
