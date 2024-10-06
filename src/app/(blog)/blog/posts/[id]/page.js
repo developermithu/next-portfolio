@@ -19,6 +19,7 @@ import axios from '@/lib/axios'
 import Tags from '@/app/(blog)/(components)/Tags'
 import RelatedPosts from '@/app/(blog)/(components)/RelatedPosts'
 import SimplePaginate from '@/components/SimplePaginate'
+import Author from '@/app/(blog)/(components)/Author'
 
 const fetcher = url => axios.get(url).then(res => res.data)
 
@@ -133,7 +134,7 @@ export default function PostPage({ params }) {
                                 {post.reading_time} min read
                             </span>
                             <Eye className="mr-2" />
-                            <span>100 views</span>
+                            <span>{post.views} views</span>
                         </div>
                         <div className="mb-12 prose prose-invert max-w-none">
                             <div
@@ -143,38 +144,7 @@ export default function PostPage({ params }) {
                         </div>
 
                         {/* Author */}
-                        <motion.div
-                            className="bg-[#2a2f3e] p-6 rounded-lg mb-12"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.4 }}>
-                            <div className="flex items-center mb-4">
-                                <img
-                                    src={
-                                        post.author?.avatar
-                                            ? post.author.avatar
-                                            : 'https://via.placeholder.com/150'
-                                    }
-                                    alt={post.author?.name}
-                                    className="w-16 h-16 mr-4 rounded-full"
-                                />
-                                <div>
-                                    <h3 className="text-xl font-semibold">
-                                        {post.author?.name}
-                                    </h3>
-                                    <p className="text-gray-400">
-                                        Full-stack developer passionate about
-                                        creating innovative web solutions.
-                                    </p>
-                                </div>
-                            </div>
-                            <motion.button
-                                className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-full"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}>
-                                Follow
-                            </motion.button>
-                        </motion.div>
+                        <Author author={post.author} />
                         {/* Author */}
 
                         {/* Comments */}
@@ -281,7 +251,6 @@ export default function PostPage({ params }) {
                             next_post={next_post}
                         />
                         {/* Pagination */}
-
                     </motion.div>
                     {console.log(data)}
                     <motion.div
