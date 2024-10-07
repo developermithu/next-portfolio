@@ -14,8 +14,6 @@ import {
     Eye,
     Send,
     LoaderCircle,
-    Trash2,
-    Edit,
 } from 'lucide-react'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
@@ -25,6 +23,8 @@ import SimplePaginate from '@/components/SimplePaginate'
 import Author from '@/app/(blog)/(components)/Author'
 import { useAuth } from '@/hooks/auth'
 import { useRouter } from 'next/navigation'
+import Comment from '@/app/(blog)/(components)/Comment'
+import toast, { Toaster } from 'react-hot-toast'
 
 const fetcher = url => axios.get(url).then(res => res.data)
 
@@ -87,11 +87,12 @@ export default function PostPage({ params }) {
             mutate() // re-fetch post data
             setCommentBody('')
             setErrorMessage(null)
+            toast.success('Comment created successfully!')
         } catch (error) {
             if (error.response?.data?.message) {
                 setErrorMessage(error.response.data.message)
             } else {
-                setErrorMessage('Something went wrong, please try again.')
+                toast.error('Something went wrong. Please try again.')
             }
         } finally {
             setIsSubmittingComment(false)
@@ -182,6 +183,8 @@ export default function PostPage({ params }) {
                 </div>
             </motion.header>
 
+            <Toaster position="top-center" reverseOrder={false} toastOptions={{ duration: 3000 }} />
+
             <main className="container px-6 py-12 mx-auto">
                 <div className="flex flex-col gap-12 lg:flex-row">
                     <motion.div
@@ -222,6 +225,8 @@ export default function PostPage({ params }) {
                             <h3 className="mb-4 text-2xl font-semibold">
                                 Comments ({post.comments?.length})
                             </h3>
+
+                            {/* Comment form */}
                             <form
                                 onSubmit={handleCommentSubmit}
                                 className="mb-8">
@@ -232,11 +237,11 @@ export default function PostPage({ params }) {
                                             setCommentBody(e.target.value)
                                         }
                                         placeholder="Add a comment..."
-                                        className={`w-full bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fd1c5] ${
+                                        className={`w-full duration-100 bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-1 focus:border-[#4fd1c5] focus:ring-[#4fd1c5] ${
                                             errorMessage &&
-                                            'border border-red-500 focus:ring-red-500 focus:border-transparent'
+                                            'border-red-500 focus:ring-red-500 focus:border-red-500'
                                         }`}
-                                        rows={4}></textarea>
+                                        rows={3}></textarea>
 
                                     {errorMessage && (
                                         <p className="text-red-500">
@@ -258,88 +263,16 @@ export default function PostPage({ params }) {
                                 </motion.button>
                             </form>
 
+                            {/* Comments and replies */}
                             {post.comments?.map(comment => (
-                                <div
+                                <Comment
                                     key={comment.id}
-                                    className="mb-6 bg-[#2a2f3e] p-4 rounded-lg">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <p className="font-semibold">
-                                            {comment.user.name}
-                                        </p>
-
-                                        {comment.user.id === user.id && (
-                                            <div className="flex space-x-2">
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    className="text-[#4fd1c5]">
-                                                    <Edit
-                                                        onClick={() =>
-                                                            setIsEditingComment(
-                                                                true,
-                                                            )
-                                                        }
-                                                        size={16}
-                                                    />
-                                                </motion.button>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    className="text-red-500">
-                                                    <Trash2
-                                                        onClick={() =>
-                                                            handleCommentDelete(
-                                                                comment.id,
-                                                            )
-                                                        }
-                                                        size={16}
-                                                    />
-                                                </motion.button>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <p className="mb-2">{comment.body}</p>
-                                    <motion.button
-                                        className="text-[#4fd1c5] hover:underline"
-                                        whileHover={{ x: 5 }}>
-                                        Reply
-                                    </motion.button>
-
-                                    {comment.replies?.map(reply => (
-                                        <div
-                                            key={reply.id}
-                                            className="mt-4 ml-6 bg-[#1a1f2e] p-3 rounded-lg">
-                                            <div className="flex items-start justify-between mb-2">
-                                                <p className="font-semibold">
-                                                    {reply.user?.name}
-                                                </p>
-                                                <div className="flex space-x-2">
-                                                    <motion.button
-                                                        whileHover={{
-                                                            scale: 1.1,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.9,
-                                                        }}
-                                                        className="text-[#4fd1c5]">
-                                                        <Edit size={14} />
-                                                    </motion.button>
-                                                    <motion.button
-                                                        whileHover={{
-                                                            scale: 1.1,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.9,
-                                                        }}
-                                                        className="text-red-500">
-                                                        <Trash2 size={14} />
-                                                    </motion.button>
-                                                </div>
-                                            </div>
-                                            <p>{reply.content}</p>
-                                        </div>
-                                    ))}
-                                </div>
+                                    comment={comment}
+                                    postId={id}
+                                    user={user}
+                                    onUpdate={mutate}
+                                    onDelete={handleCommentDelete}
+                                />
                             ))}
                         </motion.div>
                         {/* Comments */}
