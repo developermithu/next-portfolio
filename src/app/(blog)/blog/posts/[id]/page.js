@@ -14,6 +14,8 @@ import {
     Eye,
     Send,
     LoaderCircle,
+    Trash2,
+    Edit,
 } from 'lucide-react'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
@@ -21,18 +23,27 @@ import Tags from '@/app/(blog)/(components)/Tags'
 import RelatedPosts from '@/app/(blog)/(components)/RelatedPosts'
 import SimplePaginate from '@/components/SimplePaginate'
 import Author from '@/app/(blog)/(components)/Author'
+import { useAuth } from '@/hooks/auth'
+import { useRouter } from 'next/navigation'
 
 const fetcher = url => axios.get(url).then(res => res.data)
 
 export default function PostPage({ params }) {
     const { id } = params
 
+    const { user } = useAuth({ middleware: 'guest' })
+    const router = useRouter()
+
     const [activeSection, setActiveSection] = useState('introduction')
     const [searchQuery, setSearchQuery] = useState('')
     const [showScrollTop, setShowScrollTop] = useState(false)
     const [showTableOfContents, setShowTableOfContents] = useState(false)
-    const [commentContent, setCommentContent] = useState('')
     const [isLiking, setIsLiking] = useState(false)
+
+    const [commentBody, setCommentBody] = useState('')
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+    const [isEditingComment, setIsEditingComment] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
 
     const { data, error, mutate } = useSWR(`/api/posts/${id}`, fetcher)
 
@@ -59,12 +70,49 @@ export default function PostPage({ params }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    const handleCommentSubmit = e => {
+    // Submit comment
+    const handleCommentSubmit = async e => {
         e.preventDefault()
-        // Add logic to submit the comment
-        console.log('Comment submitted:', commentContent)
-        setCommentContent('')
+        setIsSubmittingComment(true)
+
+        if (!user) {
+            router.push('/login')
+            return
+        }
+
+        try {
+            await axios.post(`/api/posts/${id}/comments`, {
+                body: commentBody,
+            })
+            mutate() // re-fetch post data
+            setCommentBody('')
+            setErrorMessage(null)
+        } catch (error) {
+            if (error.response?.data?.message) {
+                setErrorMessage(error.response.data.message)
+            } else {
+                setErrorMessage('Something went wrong, please try again.')
+            }
+        } finally {
+            setIsSubmittingComment(false)
+        }
     }
+
+    // Delete comment
+    const handleCommentDelete = async commentId => {
+        if (!confirm('Are you sure you want to delete this comment?')) {
+            return
+        }
+
+        try {
+            await axios.delete(`/api/posts/${id}/comments/${commentId}`)
+            mutate() // re-fetch post data
+        } catch (error) {
+            console.error('Error deleting comment:', error)
+        }
+    }
+
+    // Edit comment
 
     const handleToggleLike = async () => {
         try {
@@ -172,65 +220,98 @@ export default function PostPage({ params }) {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.6 }}>
                             <h3 className="mb-4 text-2xl font-semibold">
-                                Comments
+                                Comments ({post.comments?.length})
                             </h3>
                             <form
                                 onSubmit={handleCommentSubmit}
                                 className="mb-8">
-                                <textarea
-                                    value={commentContent}
-                                    onChange={e =>
-                                        setCommentContent(e.target.value)
-                                    }
-                                    placeholder="Add a comment..."
-                                    className="w-full bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fd1c5] mb-4"
-                                    rows={4}></textarea>
+                                <div className="mb-4">
+                                    <textarea
+                                        value={commentBody}
+                                        onChange={e =>
+                                            setCommentBody(e.target.value)
+                                        }
+                                        placeholder="Add a comment..."
+                                        className={`w-full bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fd1c5] ${
+                                            errorMessage &&
+                                            'border border-red-500 focus:ring-red-500 focus:border-transparent'
+                                        }`}
+                                        rows={4}></textarea>
+
+                                    {errorMessage && (
+                                        <p className="text-red-500">
+                                            {errorMessage}
+                                        </p>
+                                    )}
+                                </div>
+
                                 <motion.button
                                     type="submit"
-                                    className="bg-[#4fd1c5] text-[#1a1f2e] px-6 py-2 rounded-full flex items-center"
+                                    disabled={isSubmittingComment}
+                                    className="bg-[#4fd1c5] text-[#1a1f2e] disabled:opacity-50 disabled:pointer-events-none px-6 py-2 rounded-full flex items-center"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}>
                                     <Send className="mr-2" />
-                                    Submit Comment
+                                    {isSubmittingComment
+                                        ? 'Submiting..'
+                                        : 'Submit Comment'}
                                 </motion.button>
                             </form>
 
-                            {/* {post.comments.map(comment => (
+                            {post.comments?.map(comment => (
                                 <div
                                     key={comment.id}
                                     className="mb-6 bg-[#2a2f3e] p-4 rounded-lg">
                                     <div className="flex items-start justify-between mb-2">
                                         <p className="font-semibold">
-                                            {comment.author}
+                                            {comment.user.name}
                                         </p>
-                                        <div className="flex space-x-2">
-                                            <motion.button
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                                className="text-[#4fd1c5]">
-                                                <Edit size={16} />
-                                            </motion.button>
-                                            <motion.button
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                                className="text-red-500">
-                                                <Trash2 size={16} />
-                                            </motion.button>
-                                        </div>
+
+                                        {comment.user.id === user.id && (
+                                            <div className="flex space-x-2">
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    className="text-[#4fd1c5]">
+                                                    <Edit
+                                                        onClick={() =>
+                                                            setIsEditingComment(
+                                                                true,
+                                                            )
+                                                        }
+                                                        size={16}
+                                                    />
+                                                </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    className="text-red-500">
+                                                    <Trash2
+                                                        onClick={() =>
+                                                            handleCommentDelete(
+                                                                comment.id,
+                                                            )
+                                                        }
+                                                        size={16}
+                                                    />
+                                                </motion.button>
+                                            </div>
+                                        )}
                                     </div>
-                                    <p className="mb-2">{comment.content}</p>
+                                    <p className="mb-2">{comment.body}</p>
                                     <motion.button
                                         className="text-[#4fd1c5] hover:underline"
                                         whileHover={{ x: 5 }}>
                                         Reply
                                     </motion.button>
-                                    {comment.replies.map(reply => (
+
+                                    {comment.replies?.map(reply => (
                                         <div
                                             key={reply.id}
                                             className="mt-4 ml-6 bg-[#1a1f2e] p-3 rounded-lg">
                                             <div className="flex items-start justify-between mb-2">
                                                 <p className="font-semibold">
-                                                    {reply.author}
+                                                    {reply.user?.name}
                                                 </p>
                                                 <div className="flex space-x-2">
                                                     <motion.button
@@ -259,7 +340,7 @@ export default function PostPage({ params }) {
                                         </div>
                                     ))}
                                 </div>
-                            ))} */}
+                            ))}
                         </motion.div>
                         {/* Comments */}
 
