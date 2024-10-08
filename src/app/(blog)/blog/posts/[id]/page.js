@@ -70,6 +70,11 @@ export default function PostPage({ params }) {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
+    const autoResize = e => {
+        e.style.height = 'auto'
+        e.style.height = `${e.scrollHeight}px`
+    }
+
     // Submit comment
     const handleCommentSubmit = async e => {
         e.preventDefault()
@@ -183,7 +188,11 @@ export default function PostPage({ params }) {
                 </div>
             </motion.header>
 
-            <Toaster position="top-center" reverseOrder={false} toastOptions={{ duration: 3000 }} />
+            <Toaster
+                position="top-center"
+                reverseOrder={false}
+                toastOptions={{ duration: 3000 }}
+            />
 
             <main className="container px-6 py-12 mx-auto">
                 <div className="flex flex-col gap-12 lg:flex-row">
@@ -236,6 +245,7 @@ export default function PostPage({ params }) {
                                         onChange={e =>
                                             setCommentBody(e.target.value)
                                         }
+                                        onInput={e => autoResize(e.target)}
                                         placeholder="Add a comment..."
                                         className={`w-full duration-100 bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-1 focus:border-[#4fd1c5] focus:ring-[#4fd1c5] ${
                                             errorMessage &&

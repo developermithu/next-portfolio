@@ -4,6 +4,10 @@ import React, { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Edit, Trash2, Send } from 'lucide-react'
 import axios from '@/lib/axios'
+import Markdown from 'react-markdown'
+import DOMPurify from 'dompurify'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/atom-one-dark.css'
 
 export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
     const [isEditing, setIsEditing] = useState(false)
@@ -34,7 +38,7 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
                 editedBody.length,
             ) // Set cursor at the end of the text
         }
-    }, [isEditing, editedBody])
+    }, [isEditing])
 
     // Focus reply form when comment is replied
     useEffect(() => {
@@ -46,7 +50,7 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
                 replyBody.length,
             ) // Set cursor at the end of the text
         }
-    }, [isReplying, replyBody])
+    }, [isReplying])
 
     // Edit comment & reply
     const handleEdit = async () => {
@@ -166,7 +170,13 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
                     </div>
                 </div>
             ) : (
-                <p className="mb-2">{comment.body}</p>
+                <div>
+                    <Markdown
+                        rehypePlugins={[rehypeHighlight]}
+                        className="prose prose-invert text-white">
+                        {DOMPurify.sanitize(comment.body)}
+                    </Markdown>
+                </div>
             )}
 
             {/* Only parent comments can reply */}
