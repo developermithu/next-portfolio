@@ -12,7 +12,7 @@ export default function SimplePaginate({ previous_post, next_post }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}>
             {previous_post ? (
-                <Link href={`/blog/posts/${previous_post.id}`} passHref>
+                <Link href={`/blog/posts/${previous_post.slug}`} passHref>
                     <motion.button
                         className="bg-[#2a2f3e] text-[#4fd1c5] px-6 py-3 rounded-full flex items-center"
                         whileHover={{ scale: 1.05, x: -5 }}
@@ -29,7 +29,7 @@ export default function SimplePaginate({ previous_post, next_post }) {
             )}
 
             {next_post ? (
-                <Link href={`/blog/posts/${next_post.id}`} passHref>
+                <Link href={`/blog/posts/${next_post.slug}`} passHref>
                     <motion.button
                         className="bg-[#2a2f3e] text-[#4fd1c5] px-6 py-3 rounded-full flex items-center"
                         whileHover={{ scale: 1.05, x: 5 }}

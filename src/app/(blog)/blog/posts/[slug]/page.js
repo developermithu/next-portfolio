@@ -29,7 +29,7 @@ import toast, { Toaster } from 'react-hot-toast'
 const fetcher = url => axios.get(url).then(res => res.data)
 
 export default function PostPage({ params }) {
-    const { id } = params
+    const { slug } = params
 
     const { user } = useAuth({ middleware: 'guest' })
     const router = useRouter()
@@ -45,7 +45,7 @@ export default function PostPage({ params }) {
     const [isEditingComment, setIsEditingComment] = useState(false)
     const [errorMessage, setErrorMessage] = useState(null)
 
-    const { data, error, mutate } = useSWR(`/api/posts/${id}`, fetcher)
+    const { data, error, mutate } = useSWR(`/api/posts/${slug}`, fetcher)
 
     const tableOfContents = [
         { id: 'introduction', title: 'Introduction' },
@@ -86,7 +86,7 @@ export default function PostPage({ params }) {
         }
 
         try {
-            await axios.post(`/api/posts/${id}/comments`, {
+            await axios.post(`/api/posts/${slug}/comments`, {
                 body: commentBody,
             })
             mutate() // re-fetch post data
@@ -111,7 +111,7 @@ export default function PostPage({ params }) {
         }
 
         try {
-            await axios.delete(`/api/posts/${id}/comments/${commentId}`)
+            await axios.delete(`/api/posts/${slug}/comments/${commentId}`)
             mutate() // re-fetch post data
         } catch (error) {
             console.error('Error deleting comment:', error)
@@ -123,7 +123,7 @@ export default function PostPage({ params }) {
     const handleToggleLike = async () => {
         try {
             setIsLiking(true)
-            await axios.post(`/api/posts/${id}/toggle-like`)
+            await axios.post(`/api/posts/${slug}/toggle-like`)
             mutate() // re-fetch post data to update like status
         } catch (err) {
             console.error('Error toggling like:', err)
@@ -278,7 +278,7 @@ export default function PostPage({ params }) {
                                 <Comment
                                     key={comment.id}
                                     comment={comment}
-                                    postId={id}
+                                    postSlug={slug}
                                     user={user}
                                     onUpdate={mutate}
                                     onDelete={handleCommentDelete}

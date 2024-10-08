@@ -12,6 +12,7 @@ import {
     ChevronDown,
 } from 'lucide-react'
 import axios from 'axios'
+import Link from 'next/link'
 
 const blogPosts = [
     {
@@ -265,14 +266,18 @@ export default function BlogPage() {
                                             {post.reading_time} min read
                                         </span>
                                     </div>
-                                    <motion.a
-                                        href={`/blog/posts/${post.id}`}
-                                        className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-lg inline-flex items-center"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}>
-                                        Read More
-                                        <ArrowRight className="ml-2" />
-                                    </motion.a>
+
+                                    <Link
+                                        href={`/blog/posts/${post.slug}`}
+                                        passHref>
+                                        <motion.button
+                                            className="bg-[#4fd1c5] text-[#1a1f2e] px-4 py-2 rounded-lg inline-flex items-center"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}>
+                                            Read More
+                                            <ArrowRight className="ml-2" />
+                                        </motion.button>
+                                    </Link>
                                 </div>
                             </div>
                         </motion.div>

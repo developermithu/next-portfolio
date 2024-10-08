@@ -9,7 +9,7 @@ import DOMPurify from 'dompurify'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/atom-one-dark.css'
 
-export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
+export default function Comment({ comment, postSlug, user, onUpdate, onDelete }) {
     const [isEditing, setIsEditing] = useState(false)
     const [editedBody, setEditedBody] = useState(comment.body)
     const [isReplying, setIsReplying] = useState(false)
@@ -55,7 +55,7 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
     // Edit comment & reply
     const handleEdit = async () => {
         try {
-            await axios.put(`/api/posts/${postId}/comments/${comment.id}`, {
+            await axios.put(`/api/posts/${postSlug}/comments/${comment.id}`, {
                 body: editedBody,
             })
             setIsEditing(false)
@@ -73,7 +73,7 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
     // Basically create another comment with parent_id
     const handleReply = async () => {
         try {
-            await axios.post(`/api/posts/${postId}/comments`, {
+            await axios.post(`/api/posts/${postSlug}/comments`, {
                 body: replyBody,
                 parent_id: comment.id,
             })
@@ -234,7 +234,7 @@ export default function Comment({ comment, postId, user, onUpdate, onDelete }) {
                 <Comment
                     key={reply.id}
                     comment={reply}
-                    postId={postId}
+                    postSlug={postSlug}
                     user={user}
                     onUpdate={onUpdate}
                     onDelete={onDelete}
