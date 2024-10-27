@@ -8,25 +8,25 @@ const projects = [
         title: "E-commerce Platform",
         description: "A full-featured online store with real-time inventory management.",
         tags: ["React", "Node.js", "MongoDB", "Redux"],
-        image: "https://placehold.it/1920x1080"
+        image: "https://placehold.co/1920x1080"
     },
     {
         title: "Social Media Dashboard",
         description: "Centralized platform for managing multiple social media accounts.",
         tags: ["Vue.js", "Express", "PostgreSQL", "Socket.io"],
-        image: "https://placehold.it/1920x1080"
+        image: "https://placehold.co/1920x1080"
     },
     {
         title: "Fitness Tracking App",
         description: "Mobile app for tracking workouts and nutrition with personalized insights.",
         tags: ["React Native", "GraphQL", "AWS", "TensorFlow"],
-        image: "https://placehold.it/1920x1080"
+        image: "https://placehold.co/1920x1080"
     },
     {
         title: "Real Estate Marketplace",
         description: "Property listing and search platform with virtual tour capabilities.",
         tags: ["Next.js", "Prisma", "MySQL", "Three.js"],
-        image: "https://placehold.it/1920x1080"
+        image: "https://placehold.co/1920x1080"
     },
 ]
 

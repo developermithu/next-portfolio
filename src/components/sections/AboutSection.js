@@ -25,7 +25,7 @@ export default function AboutSection() {
             >
               <div className="relative">
                 <img
-                  src="https://placehold.it/1080x720"
+                  src="https://placehold.co/1080x720"
                   alt="Mithu Das"
                   className="w-full h-auto rounded-lg"
                 />
@@ -71,14 +71,14 @@ export default function AboutSection() {
                 </h4>
                 <div className="flex flex-wrap gap-4">
                   {[
-                    "JavaScript",
+                    "PHP",
+                    "Laravel",
+                    "Livewire",
+                    "Inertia",
                     "React",
-                    "Node.js",
-                    "Python",
-                    "MongoDB",
-                    "AWS",
-                    "GraphQL",
-                    "Docker",
+                    "Nextjs",
+                    "Alpinejs",
+                    "Tailwindcss",
                   ].map((skill) => (
                     <motion.span
                       key={skill}

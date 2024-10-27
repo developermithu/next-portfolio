@@ -14,7 +14,7 @@ const RootLayout = ({ children }) => {
 }
 
 export const metadata = {
-    title: 'Mithu Das - Full Stack Laravel Developer',
+    title: 'Developer Mithu - Full Stack Laravel Developer',
 }
 
 export default RootLayout
