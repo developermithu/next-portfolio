@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+
 module.exports = {
     root: true,
     parser: '@babel/eslint-parser',
