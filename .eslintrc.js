@@ -1,5 +1,3 @@
-/* eslint-disable linebreak-style */
-
 module.exports = {
     root: true,
     parser: '@babel/eslint-parser',
@@ -47,7 +45,7 @@ module.exports = {
         'react/no-unescaped-entities': 0,
         'react/require-default-props': 0,
         'react/react-in-jsx-scope': 0,
-        'linebreak-style': ['error', 'windows'],
+        'linebreak-style': 'off',
         semi: ['error', 'never'],
     },
 }
