@@ -36,7 +36,11 @@ export default function BlogHeader() {
                             {navItems.map(item => (
                                 <motion.a
                                     key={item}
-                                    href={item.toLowerCase() === 'home' ? '/' : `/#${item.toLowerCase()}`}
+                                    href={
+                                        item.toLowerCase() === 'home'
+                                            ? '/'
+                                            : `/#${item.toLowerCase()}`
+                                    }
                                     className="hover:text-[#4fd1c5] transition-colors"
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.95 }}>

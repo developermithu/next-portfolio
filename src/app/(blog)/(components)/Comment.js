@@ -20,7 +20,6 @@ export default function Comment({
     const [isEditing, setIsEditing] = useState(false)
     const [isReplying, setIsReplying] = useState(false)
     const [editedBody, setEditedBody] = useState(comment.body)
-    const [replyBody, setReplyBody] = useState('')
     const [editError, setEditError] = useState(null)
     const [replyError, setReplyError] = useState(null)
 
@@ -49,7 +48,6 @@ export default function Comment({
                 body: replyText,
                 parent_id: comment.id,
             })
-            setReplyBody('')
             onUpdate()
             setReplyError(null)
             setIsReplying(false)

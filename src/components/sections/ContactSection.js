@@ -104,7 +104,7 @@ export default function ContactSection() {
                                     value={message}
                                     onChange={e => setMessage(e.target.value)}
                                     className="w-full px-3 py-2 bg-[#2a2f3e] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#4fd1c5]"
-                                    required></textarea>
+                                    required />
                             </div>
                             <motion.button
                                 type="submit"

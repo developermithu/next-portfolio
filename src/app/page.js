@@ -1,5 +1,3 @@
-import LoginLinks from '@/app/LoginLinks'
-import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import AboutSection from '@/components/sections/AboutSection'
 import BlogSection from '@/components/sections/BlogSection'

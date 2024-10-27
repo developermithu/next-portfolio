@@ -42,7 +42,6 @@ export default function PostPage({ params }) {
 
     const [commentBody, setCommentBody] = useState('')
     const [isSubmittingComment, setIsSubmittingComment] = useState(false)
-    const [isEditingComment, setIsEditingComment] = useState(false)
     const [errorMessage, setErrorMessage] = useState(null)
 
     const { data, error, mutate } = useSWR(`/api/posts/${slug}`, fetcher)
@@ -218,7 +217,7 @@ export default function PostPage({ params }) {
                             <div
                                 dangerouslySetInnerHTML={{
                                     __html: post.content,
-                                }}></div>
+                                }} />
                         </div>
 
                         {/* Author */}
@@ -251,7 +250,7 @@ export default function PostPage({ params }) {
                                             errorMessage &&
                                             'border-red-500 focus:ring-red-500 focus:border-red-500'
                                         }`}
-                                        rows={3}></textarea>
+                                        rows={3} />
 
                                     {errorMessage && (
                                         <p className="text-red-500">

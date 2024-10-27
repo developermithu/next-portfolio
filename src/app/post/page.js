@@ -211,7 +211,7 @@ export default FutureTechList;
                             <div
                                 dangerouslySetInnerHTML={{
                                     __html: blogPost.content,
-                                }}></div>
+                                }} />
                         </div>
 
                         <motion.div
@@ -260,7 +260,7 @@ export default FutureTechList;
                                     }
                                     placeholder="Add a comment..."
                                     className="w-full bg-[#2a2f3e] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fd1c5] mb-4"
-                                    rows={4}></textarea>
+                                    rows={4} />
                                 <motion.button
                                     type="submit"
                                     className="bg-[#4fd1c5] text-[#1a1f2e] px-6 py-2 rounded-full flex items-center"

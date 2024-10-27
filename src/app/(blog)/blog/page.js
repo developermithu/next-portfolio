@@ -70,14 +70,6 @@ export default function BlogPage() {
 
     const [posts, setPosts] = useState([])
 
-    const filteredPosts = blogPosts.filter(
-        post =>
-            post.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-            (selectedCategory === 'All' ||
-                post.category === selectedCategory) &&
-            (selectedTag === '' || post.tags.includes(selectedTag)),
-    )
-
     useEffect(() => {
         fetchPosts()
     }, [])
