@@ -11,8 +11,8 @@ import {
     User,
     ChevronDown,
 } from 'lucide-react'
-import axios from 'axios'
 import Link from 'next/link'
+import axios from '@/lib/axios'
 
 const blogPosts = [
     {
@@ -75,7 +75,7 @@ export default function BlogPage() {
     }, [])
 
     const fetchPosts = async () => {
-        const response = await axios.get('http://localhost:8000/api/posts')
+        const response = await axios.get('/api/posts')
         setPosts(response.data.data)
     }
 
