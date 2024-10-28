@@ -25,7 +25,7 @@ const blogPosts = [
         readTime: '10 min read',
         category: 'Web Development',
         tags: ['AI', 'Serverless', 'PWA'],
-        image: 'https://placehold.it/600x400',
+        image: 'https://placehold.co/600x400',
     },
     {
         id: 2,
@@ -37,7 +37,7 @@ const blogPosts = [
         readTime: '15 min read',
         category: 'React',
         tags: ['Hooks', 'State Management', 'Performance'],
-        image: 'https://placehold.it/600x400',
+        image: 'https://placehold.co/600x400',
     },
     {
         id: 3,
@@ -49,7 +49,7 @@ const blogPosts = [
         readTime: '12 min read',
         category: 'API',
         tags: ['GraphQL', 'REST', 'Performance'],
-        image: 'https://placehold.it/600x400',
+        image: 'https://placehold.co/600x400',
     },
 ]
 
@@ -218,7 +218,7 @@ export default function BlogPage() {
                                         src={
                                             post.image_url
                                                 ? post.image_url
-                                                : 'https://placehold.it/600x400'
+                                                : 'https://placehold.co/600x400'
                                         }
                                         alt={post.title}
                                         className="object-cover w-full h-full"

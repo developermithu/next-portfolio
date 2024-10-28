@@ -7,7 +7,7 @@ export default function CommentHeader({ comment, user, onEdit, onDelete }) {
         <div className="flex items-start justify-between mb-2">
             <div className="flex items-start mb-2">
                 <img
-                    src={comment.user?.image || 'https://placehold.it/60x60'}
+                    src={comment.user?.image || 'https://placehold.co/60x60'}
                     alt={comment.user?.name}
                     className="w-10 h-10 rounded-full mr-3"
                 />
