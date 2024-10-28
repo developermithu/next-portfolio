@@ -3,6 +3,7 @@
 import { useAuth } from '@/hooks/auth'
 import Navigation from '@/app/(app)/Navigation'
 import Loading from '@/app/(app)/Loading'
+import { GeistSans } from 'geist/font/sans'
 
 const AppLayout = ({ children }) => {
     const { user } = useAuth({ middleware: 'auth' })
@@ -12,7 +13,7 @@ const AppLayout = ({ children }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className={`min-h-screen bg-gray-800 text-gray-100 ${GeistSans.className}`}>
             <Navigation user={user} />
 
             <main>{children}</main>
