@@ -1,5 +1,26 @@
+const title = 'Authentication | Developer Mithu'
+
 export const metadata = {
-    title: 'Authentication | Developer Mithu',
+    title: {
+        default: title,
+        template: '%s | Developer Mithu',
+    },
+    description: '',
+    keywords: '',
+    openGraph: {
+        title: {
+            default: title,
+            template: '%s | Developer Mithu',
+        },
+        description: '',
+      },
+      twitter: {
+        title: {
+            default: title,
+            template: '%s | Developer Mithu',
+        },
+        description: '',
+      },
     robots: {
         index: false,
         follow: false,

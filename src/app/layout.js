@@ -10,7 +10,6 @@ export const metadata = {
   description: description,
   keywords: keywords,
   authors: [{ name: 'Mithu' }],
-  creator: 'Mithu',
   openGraph: {
     title: title,
     description: description,
