@@ -6,9 +6,6 @@ import HeroSection from '@/components/sections/HeroSection'
 import ProjectSection from '@/components/sections/ProjectSection'
 import { ServiceSection } from '@/components/sections/ServiceSection'
 
-export const metadata = {
-    title: 'Mithu Das - Full Stack Laravel Developer',
-}
 
 const Home = () => {
     return (
@@ -20,7 +17,6 @@ const Home = () => {
             <ProjectSection />
             <BlogSection />
             <ContactSection />
-            {/* <Footer /> */}
         </>
     )
 }
